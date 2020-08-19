@@ -8,18 +8,19 @@
     <link href="/stylesheets/style.css" rel="stylesheet" type="text/css">
     <meta charset="UTF-8">
     <script src="socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.0.js"></script>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
 <script>
-    var socket = io("https://appmessengers.herokuapp.com");
+    var socket = io(window.location.origin);
     socket.on("server-chat",(obj)=>{
         console.log(socket.id)
         if(socket.id == obj.id){
         var content =  `<div class="d-flex justify-content-end mb-4">`
-            content +=  `<div class="msg_cotainer_send">${obj.data}</div>`
+            content +=  `<div class="msg_cotainer_send"><b>${obj.name}</b> -> ${obj.data}</div>`
             content +=    `<div class="img_cont_msg">`
             content +=      `<img class="rounded-circle user_img_msg">`
             content +=    `</div>`
@@ -27,30 +28,41 @@
             content += `</div>`
         $(".msg_card_body").append(content)
         }else{
-            var content = `<div class="d-flex justify-content-start mb-4"><div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img class="rounded-circle user_img_msg"></div><div class="msg_cotainer">${obj.data}</div></div></div>`
+            var content = `<div class="d-flex justify-content-start mb-4"><div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img class="rounded-circle user_img_msg"></div><div class="msg_cotainer"><b>${obj.name}</b> -> ${obj.data}</div></div></div>`
             $(".msg_card_body").append(content)
         }
 
         
     })
     $(document).ready(function(){
+        var name = prompt("Nhập tên đi", "");
         $('#action_menu_btn').click(function(){
             $('.action_menu').toggle();
         });
         $(".send_btn").click(function (e) { 
+            $('.msg_card_body').animate({scrollTop: 5000});
             var msg = $(".type_msg").val();
-            var obj = {
+            if(msg == "" ){
+            
+            }else if(name == null || name == ""){
+                alert("Chưa nhập tên sao chat ??");
+            }else{
+                var obj = {
+                name : name,
                 data : msg,
                 id : socket.id
             }
-            socket.emit("client-chat",obj)
+                socket.emit("client-chat",obj);
+                $(".type_msg").val('');
+            }
             
+
         });
 	});
     </script>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-8 col-xl-6 chat">
+    <div class="container-fluid h-500">
+        <div class="row justify-content-center h-500">
+            <div class="col-md-20 col-xl-6 chat">
                 <div class="card">
                     <div class="card-header msg_head">
                         <div class="d-flex bd-highlight">
