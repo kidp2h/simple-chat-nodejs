@@ -14,17 +14,24 @@
 </head>
 <body>
 <script>
-    var socket = io("https://appmessengers.herokuapp.com/");
-    socket.on("server-chat",(data)=>{
-        var content =  `<div class="d-flex justify-content-start mb-4">`
-            content +=  `<div class="d-flex justify-content-start mb-4">`
+    var socket = io("http://localhost:3000");
+    socket.on("server-chat",(obj)=>{
+        console.log(socket.id)
+        if(socket.id == obj.id){
+        var content =  `<div class="d-flex justify-content-end mb-4">`
+            content +=  `<div class="msg_cotainer_send">${obj.data}</div>`
             content +=    `<div class="img_cont_msg">`
             content +=      `<img class="rounded-circle user_img_msg">`
             content +=    `</div>`
-            content +=   `<div class="msg_cotainer">${data}`
             content += `</div>`
             content += `</div>`
         $(".msg_card_body").append(content)
+        }else{
+            var content = `<div class="d-flex justify-content-start mb-4"><div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img class="rounded-circle user_img_msg"></div><div class="msg_cotainer">${obj.data}</div></div></div>`
+            $(".msg_card_body").append(content)
+        }
+
+        
     })
     $(document).ready(function(){
         $('#action_menu_btn').click(function(){
@@ -32,8 +39,11 @@
         });
         $(".send_btn").click(function (e) { 
             var msg = $(".type_msg").val();
-            console.log(msg)
-            socket.emit("client-chat",msg)
+            var obj = {
+                data : msg,
+                id : socket.id
+            }
+            socket.emit("client-chat",obj)
             
         });
 	});

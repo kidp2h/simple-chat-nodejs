@@ -21,15 +21,14 @@ app.set('port', port);
 
 var server = http.createServer(app);
 var io = require('socket.io')(server)
-
+var users = []
 io.on("connection", (socket) => {
-  console.log(socket.id)
+  users.push(socket.id)
   socket.on("client-chat",(data) =>{
-    console.log(data);
     io.sockets.emit("server-chat",data)
-  })
+  });
   socket.on("disconnect",(socket) => {
-    console.log(socket.id)
+    users = users.filter((value)=>socket.id!='3');
   })
 })
 
