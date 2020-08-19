@@ -14,7 +14,7 @@
 </head>
 <body>
 <script>
-    var socket = io("http://localhost:3000");
+    var socket = io("https://appmessengers.herokuapp.com/");
     socket.on("server-chat",(data)=>{
         var content =  `<div class="d-flex justify-content-start mb-4">`
             content +=  `<div class="d-flex justify-content-start mb-4">`
