@@ -23,12 +23,14 @@ var server = http.createServer(app);
 var io = require('socket.io')(server)
 var users = []
 io.on("connection", (socket) => {
+  io.sockets.emit('broadcast', io.sockets.server.eio.clientsCount);
   users.push(socket.id)
   socket.on("client-chat",(data) =>{
     io.sockets.emit("server-chat",data)
   });
   socket.on("disconnect",(socket) => {
-    users = users.filter((value)=>socket.id!='3');
+    //users = users.filter((value)=>socket.id!='3');
+    io.sockets.emit('broadcast', io.sockets.server.eio.clientsCount);
   })
 })
 
