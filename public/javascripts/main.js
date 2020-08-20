@@ -1,14 +1,35 @@
+
 $(document).ready(function () {
     var socket = io(window.location.origin);
     socket.on("broadcast", (data) => {
         $(".countSock").text(data)
     })
-    $("#setNam").modal({backdrop:'static',keyboard:false})
-    $(".submitSetName").click((e)=>{
+    function chat() {
         var name = $("#valName").val();
-        if(name == "" || name == null){
+        $('.msg_card_body').animate({
+            scrollTop: 5000
+        });
+        var msg = $(".type_msg").val();
+        if (msg == "") {
+    
+        } else if (name == "" || name == null) {
+            $("#setName").modal("show")
+        } else {
+            var obj = {
+                name: name,
+                data: msg,
+                id: socket.id
+            }
+            socket.emit("client-chat", obj);
+            $(".type_msg").val('');
+        }
+    }
+    $("#setName").modal("show")
+    $(".submitSetName").click((e) => {
+        var name = $("#valName").val();
+        if (name == "" || name == null) {
 
-        }else{
+        } else {
             $("#setName").modal("hide")
         }
     })
@@ -32,28 +53,14 @@ $(document).ready(function () {
     $('#action_menu_btn').click(function () {
         $('.action_menu').toggle();
     });
+    $(".type_msg").on("keydown click", function (event) {
+        if (event.which == 13) {
+            chat();
+        }
+
+    });
     $(".send_btn").click(function (e) {
-        var name = $("#valName").val();
-        $('.msg_card_body').animate({
-            scrollTop: 5000
-        });
-        var msg = $(".type_msg").val();
-        if (msg == "") {
-
-        } else if(name =="" || name == null){
-            $("#setName").modal("show")
-        }
-        else {
-            var obj = {
-                name: name,
-                data: msg,
-                id: socket.id
-            }
-            socket.emit("client-chat", obj);
-            $(".type_msg").val('');
-        }
-
-
+        chat();
     });
 
 });
